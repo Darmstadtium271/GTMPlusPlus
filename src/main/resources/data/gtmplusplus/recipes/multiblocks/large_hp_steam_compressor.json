@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SGS",
+    "SMS",
+    "SGS"
+  ],
+  "key": {
+    "S": {
+      "item": "gtceu:solid_machine_casing"
+    },
+    "G": {
+      "tag": "forge:gears/potin"
+    },
+    "M": {
+      "item": "gtceu:hp_steam_compressor"
+    }
+  },
+  "result": {
+    "item": "gtmplusplus:large_hp_steam_compressor",
+    "count": 1
+  }
+}

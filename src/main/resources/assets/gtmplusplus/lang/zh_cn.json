@@ -1,0 +1,14 @@
+{
+  "itemGroup.gtmplusplus.main_tab": "GTM++",
+  "block.gtmplusplus.hp_steam_grinder": "高压蒸汽碾磨机",
+  "block.gtmplusplus.large_steam_compressor": "大型蒸汽压缩机",
+  "block.gtmplusplus.large_hp_steam_compressor": "大型高压蒸汽压缩机",
+  "block.gtmplusplus.large_steam_forge_hammer": "大型蒸汽锻造锤",
+  "block.gtmplusplus.large_hp_steam_forge_hammer": "大型高压蒸汽锻造锤",
+  "block.gtmplusplus.large_steam_alloy_smelter": "大型蒸汽合金炉",
+  "block.gtmplusplus.large_hp_steam_alloy_smelter": "大型高压蒸汽合金炉",
+  "gtmplusplus.machine.large_steam_compressor.tooltip": "一台更大、更快的蒸汽压缩机",
+  "gtmplusplus.machine.large_steam_forge_hammer.tooltip": "八十! 八十!",
+  "gtmplusplus.machine.large_steam_alloy_smelter.tooltip": "炉火纯青",
+  "gtmplusplus.machine.steam_hp_multiblocks.tooltip": "处理速度与蒸汽消耗翻倍"
+}

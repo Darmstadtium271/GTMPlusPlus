@@ -1,0 +1,14 @@
+{
+  "itemGroup.gtmplusplus.main_tab": "GTM++",
+  "block.gtmplusplus.hp_steam_grinder": "High Pressure Steam Grinder",
+  "block.gtmplusplus.large_steam_compressor": "Large Steam Compressor",
+  "block.gtmplusplus.large_hp_steam_compressor": "Large High Pressure Steam Compressor",
+  "block.gtmplusplus.large_steam_forge_hammer": "Large Steam Forge Hammer",
+  "block.gtmplusplus.large_hp_steam_forge_hammer": "Large High Pressure Steam Forge Hammer",
+  "block.gtmplusplus.large_steam_alloy_smelter": "Large Steam Alloy Smelter",
+  "block.gtmplusplus.large_hp_steam_alloy_smelter": "Large High Pressure Steam Alloy Smelter",
+  "gtmplusplus.machine.large_steam_compressor.tooltip": "A Bigger and Faster Steam Compressor",
+  "gtmplusplus.machine.large_steam_forge_hammer.tooltip": "Wham! Wham!",
+  "gtmplusplus.machine.large_steam_alloy_smelter.tooltip": "Flawless Mastery Forged in the Alloy Smelter",
+  "gtmplusplus.machine.steam_hp_multiblocks.tooltip": "Processing Speed and Steam Consumption is doubled."
+}
