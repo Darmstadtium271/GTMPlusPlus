@@ -1,9 +1,5 @@
 package dev.darmstadtium271.gtmplusplus.common.machine;
 
-import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
-
-import static dev.darmstadtium271.gtmplusplus.GTMPlusPlus.GTMPPRegistrate.REGISTRATE;
-
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
@@ -20,17 +16,19 @@ import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.machine.multiblock.steam.SteamParallelMultiblockMachine;
-
 import dev.darmstadtium271.gtmplusplus.common.machine.recipemodifier.HighPressureSteamParallelRecipeModifier;
-
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Blocks;
 
 import java.util.Objects;
 
+import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
+import static dev.darmstadtium271.gtmplusplus.GTMPlusPlus.GTMPPRegistrate.REGISTRATE;
+
 public class GTMPPMultiblocks {
 
     // Steam Multiblocks
+    // Inspired By GT5U&GTNH
     public static final MultiblockMachineDefinition HP_STEAM_GRINDER = REGISTRATE
             .multiblock("hp_steam_grinder", SteamParallelMultiblockMachine::new)
             .rotationState(RotationState.ALL)
