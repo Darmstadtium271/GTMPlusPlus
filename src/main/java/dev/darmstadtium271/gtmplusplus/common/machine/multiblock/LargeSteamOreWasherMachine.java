@@ -70,5 +70,4 @@ public class LargeSteamOreWasherMachine extends BasicSteamParallelMultiblockMach
             fluidBlockOffsets.add(center.relative(counterClockWise).subtract(pos));
         }
     }
-
 }
