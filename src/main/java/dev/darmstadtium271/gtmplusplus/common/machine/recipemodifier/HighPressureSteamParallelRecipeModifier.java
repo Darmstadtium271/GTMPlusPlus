@@ -46,10 +46,10 @@ public final class HighPressureSteamParallelRecipeModifier {
         if (!(machine instanceof SteamParallelMultiblockMachine steamMachine)) {
             return RecipeModifier.nullWrongType(SteamParallelMultiblockMachine.class, machine);
         }
-        if (RecipeHelper.getRecipeEUtTier(recipe) > GTValues.LV)
-            return ModifierFunction.NULL;
-        long eut = RecipeHelper.getInputEUt(recipe);
-        int parallelAmount = ParallelLogic.getParallelAmount(machine, recipe, steamMachine.maxParallels);
+        if (RecipeHelper.getRecipeEUtTier(recipe) > GTValues.LV) return ModifierFunction.NULL;
+        // long eut = RecipeHelper.getInputEUt(recipe);
+        long eut = recipe.getInputEUt();
+        int parallelAmount = ParallelLogic.getParallelAmount(machine, recipe, steamMachine.getMaxParallels());
         double eutMultiplier = (eut * 0.8888 * parallelAmount <= 32) ? (0.8888 * parallelAmount) : (32.0 / eut);
         return ModifierFunction.builder().inputModifier(ContentModifier.multiplier(parallelAmount))
                 .outputModifier(ContentModifier.multiplier(parallelAmount)).durationMultiplier(1.5 / 2)

@@ -1,16 +1,14 @@
 modLoader = "javafml"
 loaderVersion = "[47,)"
 #issueTrackerURL = ""
-license = "Insert License Here"
+license = "GPLv3"
 
 [[mods]]
 modId = "gtmplusplus"
 version = "${version}"
 displayName = "GTM++"
-authors = "Me!"
-description = '''
-This is an example description! Tell everyone what your mod is about!
-'''
+authors = "Darmstadtium271"
+description = ''''''
 #logoFile = ""
 
 [[dependencies.gtmplusplus]]
@@ -26,3 +24,10 @@ mandatory = true
 versionRange = "[1.20.1,)"
 ordering = "NONE"
 side = "BOTH"
+
+[[dependencies.gtmplusplus]]
+modId = "gtceu"
+mandatory = true
+versionRange = "[1.7.0,)"
+side = "BOTH"
+

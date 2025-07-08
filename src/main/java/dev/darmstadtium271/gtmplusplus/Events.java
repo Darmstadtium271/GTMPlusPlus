@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.event.PostMaterialEvent;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 
-import dev.darmstadtium271.gtmplusplus.common.machine.GTMPPMachines;
+import dev.darmstadtium271.gtmplusplus.common.data.machines.GTMPPMachines;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.eventbus.api.IEventBus;
