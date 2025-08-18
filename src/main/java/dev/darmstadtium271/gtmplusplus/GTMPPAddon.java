@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.addon.GTAddon;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import dev.darmstadtium271.gtmplusplus.common.data.recipes.GTMPPRecipes;
+import dev.darmstadtium271.gtmplusplus.common.registry.GTMPPRegistration;
 import net.minecraft.data.recipes.FinishedRecipe;
 
 import java.util.function.Consumer;
@@ -13,7 +14,7 @@ public class GTMPPAddon implements IGTAddon {
 
     @Override
     public GTRegistrate getRegistrate() {
-        return GTMPlusPlus.GTMPPRegistrate.REGISTRATE;
+        return GTMPPRegistration.REGISTRATE;
     }
 
     @Override

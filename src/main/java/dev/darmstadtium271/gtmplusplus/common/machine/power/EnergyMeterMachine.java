@@ -7,9 +7,6 @@ import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
-import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
-import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -43,10 +40,10 @@ public class EnergyMeterMachine extends TieredIOPartMachine {
     @DescSynced
     @Getter
     private String totalEnergy;
-    @Persisted(key = "is_active")
+    @Persisted(key = "current_power")
     @DescSynced
     @Getter
-    private boolean isActive;
+    private long current_power;
 
     private static final long[] modes = { 1, 1_000, 1_000_000, 1_000_000_000 };
     private static final String[] modeNames = { "EU", "kEU", "MEU", "GEU" };
@@ -57,29 +54,30 @@ public class EnergyMeterMachine extends TieredIOPartMachine {
 
     public EnergyMeterMachine(IMachineBlockEntity holder, int tier) {
         super(holder, tier, IO.BOTH);
-        this.isActive = true;
+        this.workingEnabled = true;
         this.mode = 0;
         this.energyContainer = new NotifiableEnergyContainer(this, GTValues.V[getTier()] * 16L, GTValues.V[getTier()],
                 GTValues.V[getTier()], GTValues.V[getTier()], GTValues.V[getTier()]);
         reinitializeEnergyContainer();
-        resetTotalEnergy();
-        this.subscriptionHandler = new ConditionalSubscriptionHandler(this, this::update, this::isSubscriptionActive);
+        clear();
+        this.subscriptionHandler = new ConditionalSubscriptionHandler(this, this::update, () -> true);
     }
 
     protected void reinitializeEnergyContainer() {
         this.energyContainer.resetBasicInfo(GTValues.V[getTier()] * 16L, GTValues.V[getTier()], GTValues.V[getTier()],
                 GTValues.V[getTier()], GTValues.V[getTier()]);
-        this.energyContainer.setSideInputCondition(s -> s == this.getFrontFacing().getClockWise());
-        this.energyContainer.setSideOutputCondition(s -> s == this.getFrontFacing().getCounterClockWise());
+        this.energyContainer.setSideInputCondition(s -> s == this.getFrontFacing().getOpposite());
+        if (this.isWorkingEnabled()) {
+            this.energyContainer
+                    .setSideOutputCondition(s -> s != getFrontFacing().getOpposite() && s != getFrontFacing());
+        } else {
+            this.energyContainer.setSideOutputCondition(s -> false);
+        }
     }
 
     @Override
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
-    }
-
-    private Boolean isSubscriptionActive() {
-        return this.isActive && energyContainer.getOutputAmperage() != 0;
     }
 
     @Override
@@ -88,47 +86,72 @@ public class EnergyMeterMachine extends TieredIOPartMachine {
         subscriptionHandler.initialize(getLevel());
     }
 
-    // Integer operations
-    private String toDisplay() {
+    // Display operations
+    private String totalEnergyToDisplay() {
         return String.valueOf((double) (DECIMAL > modes[mode] ?
                 new BigInteger(totalEnergy).multiply(BigInteger.valueOf(DECIMAL / modes[mode])) :
                 new BigInteger(totalEnergy).divide(BigInteger.valueOf(modes[mode] / DECIMAL)))
                 .mod(BigInteger.valueOf(MAX_EU * DECIMAL)).longValue() / DECIMAL);
     }
 
+    private String averagePowerToDisplay() {
+        return String.valueOf((double) ((DECIMAL > modes[mode] ? current_power * (DECIMAL / modes[mode]) :
+                current_power / (modes[mode] / DECIMAL)) % (MAX_EU * DECIMAL)) / DECIMAL);
+    }
+
     // Data
-    private void resetTotalEnergy() {
+    private void clear() {
         this.totalEnergy = "0";
+        this.current_power = 0;
     }
 
     private void update() {
         if (getOffsetTimer() % 20 != 0) return;
         long val = this.energyContainer.getOutputPerSec();
-        this.totalEnergy = new BigInteger(totalEnergy).add(BigInteger.valueOf(val)).toString();
+        this.totalEnergy = new BigInteger(this.totalEnergy).add(BigInteger.valueOf(val)).toString();
+        this.current_power = this.energyContainer.getOutputPerSec();
         subscriptionHandler.updateSubscription();
     }
 
     // GUI
+    private static final int TOTAL_WIDTH = 160;
+    private static final int TOTAL_HEIGHT = 70;
+    private static final int GAP = 4;
+    private static final int TEXT_HEIGHT = 10;
+    private static final int CLEAR_BUTTON_WIDTH_HEIGHT = 16;
+
     @Override
     public Widget createUIWidget() {
-        // var group = new WidgetGroup(0, 0, 89, 63);
-        var group = new WidgetGroup(0, 0, 100, 70);
-        group.addWidget(new ImageWidget(4, 4, 92, 62, GuiTextures.DISPLAY));
-        group.addWidget(new LabelWidget(8, 8, "gtmplusplus.gui.energy_meter.total_energy"))
-                .addWidget(new LabelWidget(8, 18, () -> toDisplay() + modeNames[mode]))
-                .addWidget(
-                        new ButtonWidget(62, 28, 35, 18,
-                                new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON,
-                                        new TextTexture("gtmplusplus.gui.energy_meter.reset")),
-                                (data) -> resetTotalEnergy()));
-        // .addWidget(new LabelWidget(8, 28, () -> getFluidNameText(tankWidget).getString()));
-        group.setBackground(GuiTextures.BACKGROUND_INVERSE);
+        var group = new WidgetGroup(0, 0, TOTAL_WIDTH, TOTAL_HEIGHT);
+        var total_energy_group = new WidgetGroup(GAP, GAP, TOTAL_WIDTH - 2 * GAP, TOTAL_HEIGHT - 2 * GAP);
+        total_energy_group.addWidget(new LabelWidget(GAP, GAP, "gtmplusplus.gui.energy_meter.total_energy"))
+                .addWidget(new WidgetGroup(GAP, GAP + TEXT_HEIGHT, TOTAL_WIDTH - 2 * GAP - 2 * GAP,
+                        CLEAR_BUTTON_WIDTH_HEIGHT)
+                        .addWidget(new LabelWidget(0, GAP, this::totalEnergyToDisplay))
+                        .addWidget(
+                                new TextTextureWidget(TOTAL_WIDTH - 2 * GAP - 2 * GAP - CLEAR_BUTTON_WIDTH_HEIGHT - 20,
+                                        1, 20, CLEAR_BUTTON_WIDTH_HEIGHT, modeNames[mode]))
+                        .addWidget(new ButtonWidget(TOTAL_WIDTH - 2 * GAP - 2 * GAP - CLEAR_BUTTON_WIDTH_HEIGHT, 0,
+                                CLEAR_BUTTON_WIDTH_HEIGHT, CLEAR_BUTTON_WIDTH_HEIGHT, GuiTextures.BUTTON,
+                                (data) -> clear())
+                                .appendHoverTooltips("gtmplusplus.gui.energy_meter.clear")))
+                .addWidget(new LabelWidget(GAP, GAP + TEXT_HEIGHT + CLEAR_BUTTON_WIDTH_HEIGHT,
+                        "gtmplusplus.gui.energy_meter.current_power"))
+                .addWidget(new WidgetGroup(GAP, GAP + 2 * TEXT_HEIGHT + CLEAR_BUTTON_WIDTH_HEIGHT,
+                        TOTAL_WIDTH - 2 * GAP - 2 * GAP, CLEAR_BUTTON_WIDTH_HEIGHT)
+                        .addWidget(new LabelWidget(0, GAP, this::averagePowerToDisplay))
+                        .addWidget(new TextTextureWidget(
+                                TOTAL_WIDTH - 2 * GAP - 2 * GAP - 20 - CLEAR_BUTTON_WIDTH_HEIGHT, 1,
+                                20 + CLEAR_BUTTON_WIDTH_HEIGHT, CLEAR_BUTTON_WIDTH_HEIGHT, modeNames[mode] + "/s")))
+                .setBackground(GuiTextures.DISPLAY);
+        group.addWidget(total_energy_group).setBackground(GuiTextures.BACKGROUND_INVERSE);
         return group;
     }
 
     // Interaction
-    private void cycleMode() {
-        mode = (mode + 1) % modes.length;
+
+    private void cycleMode(boolean isRollBack) {
+        mode = (mode + (isRollBack ? modes.length - 1 : 1)) % modes.length;
         if (!Objects.requireNonNull(getLevel()).isClientSide) {
             notifyBlockUpdate();
             markDirty();
@@ -138,9 +161,9 @@ public class EnergyMeterMachine extends TieredIOPartMachine {
     @Override
     protected InteractionResult onSoftMalletClick(Player playerIn, InteractionHand hand, Direction gridSide,
                                                   BlockHitResult hitResult) {
-        // isActive = !isActive;
-        playerIn.sendSystemMessage(Component.literal(toDisplay() + modeNames[mode]));
-        return InteractionResult.CONSUME;
+        InteractionResult superReturn = super.onSoftMalletClick(playerIn, hand, gridSide, hitResult);
+        reinitializeEnergyContainer();
+        return superReturn;
     }
 
     @Override
@@ -154,8 +177,10 @@ public class EnergyMeterMachine extends TieredIOPartMachine {
     @Override
     protected InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, Direction gridSide,
                                                    BlockHitResult hitResult) {
-        cycleMode();
-        playerIn.sendSystemMessage(Component.literal(modeNames[mode]));
-        return InteractionResult.CONSUME;
+        InteractionResult superReturn = super.onScrewdriverClick(playerIn, hand, gridSide, hitResult);
+        cycleMode(playerIn.isShiftKeyDown());
+        playerIn.sendSystemMessage(
+                Component.translatable("gtmplusplus.machine.energy_meter.display_unit", modeNames[mode]));
+        return superReturn;
     }
 }

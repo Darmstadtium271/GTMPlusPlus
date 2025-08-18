@@ -1,0 +1,23 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "gtmplusplus:uxv_energy_meter",
+  "replaceable_textures": [
+    "bottom",
+    "top",
+    "side"
+  ],
+  "variants": {
+    "": {
+      "model": {
+        "parent": "gtceu:block/casings/voltage/uxv",
+        "textures": {
+          "overlay_back": "gtceu:block/overlay/machine/overlay_energy_1a_in",
+          "overlay_back_emissive": "gtceu:block/overlay/machine/overlay_energy_1a_tinted",
+          "overlay_front": "gtmplusplus:block/machines/energy_meter/overlay_front",
+          "overlay_front_emissive": "gtmplusplus:block/machines/energy_meter/overlay_front_emissive"
+        }
+      }
+    }
+  }
+}

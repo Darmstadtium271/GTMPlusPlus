@@ -1,143 +1,65 @@
 plugins {
-	id 'dev.architectury.loom' version '1.10-SNAPSHOT'
+	id 'idea'
+	id 'java-library'
 	id 'maven-publish'
+	id 'net.neoforged.moddev.legacyforge' version '2.0.99'
 	id 'com.diffplug.spotless' version '7.0.4'
+	id 'io.freefair.lombok' version '8.14'
 }
 
+tasks.named('wrapper', Wrapper).configure {
+	distributionType = Wrapper.DistributionType.BIN
+}
 
-group = project.maven_group
 version = project.mod_version + (project.mod_state == "RELEASE" ? "" : "-" + project.mod_state) + (project.mod_state == "SNAPSHOT" ? "-" + new Date().format("yyyyMMdd.HHmmSS", TimeZone.getTimeZone("UTC")) : "")
+group = project.mod_group_id
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
-base {
-	archivesName = project.archives_name
-}
+sourceSets.main.resources { srcDir 'src/generated/resources' }
 
-loom {
-	forge {
-		mixinConfig 'gtmplusplus.mixins.json'
-	}
-}
-
-repositories {
-	flatDir {
-		dir 'libs'
-	}
-	maven { // Parchment
-		name = 'ParchmentMC'
-		url = 'https://maven.parchmentmc.org'
-	}
-	maven { url = "https://ldtteam.jfrog.io/artifactory/parchmentmc-public" }
-	maven { // GTCEu Modern
-		name = 'GTCEu Maven'
-		url = 'https://maven.gtceu.com'
-		content {
-			includeGroup 'com.gregtechceu.gtceu'
-		}
-	}
-	maven { // JEI
-		name = "Jared's Maven"
-		url = "https://maven.blamejared.com/"
-	}
-	maven { // JEI mirror, AE2
-		name = "ModMaven"
-		url = "https://modmaven.dev"
-	}
-	maven { url = "https://maven.terraformersmc.com/releases/" }// EMI
-	maven { url = "https://api.modrinth.com/maven" }// Modrinth Maven
-	maven { url = "https://cursemaven.com" }// Curseforge Maven
-	maven { url = "https://maven.shedaniel.me/" }// shedaniel - REI, architectury, cloth-config
-	maven { url = "https://maven.tterrag.com/" }// tterrag - registrate
-	maven { url = "https://thedarkcolour.github.io/KotlinForForge/" }// KotlinForForge
-//	maven { // LDLib, Shimmer
-//		name = "FirstDarkDev Maven"
-//		url = "https://maven.firstdarkdev.xyz/snapshots"
-//	}
-}
-
-dependencies {
-	minecraft "net.minecraft:minecraft:$project.minecraft_version"
-	forge "net.minecraftforge:forge:$project.forge_version"
-	mappings loom.layered() {
-		officialMojangMappings()
-		parchment("org.parchmentmc.data:parchment-${project.minecraft_version}:${project.parchment_version}@zip")
-	}
-
-	modImplementation("com.gregtechceu.gtceu:gtceu-${project.minecraft_version}:${project.gtm_version}") { transitive = false }
-	modImplementation("curse.maven:ldlib-626676:${project.ldlib_id}")
-	//modImplementation("com.lowdragmc.ldlib:ldlib-forge-$project.minecraft_version:$project.ldlib_version") { transitive = false }
-	modImplementation("com.tterrag.registrate:Registrate:$project.registrate_version")
-
-	modCompileOnly("mezz.jei:jei-$project.minecraft_version-forge-api:$project.jei_version") { transitive = false }
-	modCompileOnly("mezz.jei:jei-$project.minecraft_version-common-api:$project.jei_version") { transitive = false }
-	modRuntimeOnly("mezz.jei:jei-$project.minecraft_version-forge:$project.jei_version") { transitive = false }
-
-//    modCompileOnly "dev.emi:emi-xplat-intermediary:${project.emi_version}:api"
-//    modCompileOnly "dev.emi:emi-forge:${project.emi_version}:api"
-//    modRuntimeOnly "dev.emi:emi-forge:${project.emi_version}"
-	modImplementation("curse.maven:emi-580555:$project.emi_id")
-
-	//modImplementation "dev.toma.configuration:configuration-forge-${project.minecraft_version}:${project.configuration_version}"
-	modImplementation("curse.maven:configuration-444699:${project.configuration_id}")
-
-	compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:${project.mixinextras_version}"))
-	implementation(include("io.github.llamalad7:mixinextras-forge:${project.mixinextras_version}"))
-
-	modImplementation "curse.maven:jade-324717:${project.jade_id}"
-
-	compileOnly 'org.projectlombok:lombok:1.18.36'
-	annotationProcessor 'org.projectlombok:lombok:1.18.36'
-}
-
-processResources {
-	inputs.property 'version', project.version
-
-	filesMatching('META-INF/mods.toml') {
-		expand version: project.version
-	}
-}
-spotless {
-	format 'misc', {
-		target '*.gradle', '.gitattributes', '.gitignore'
-		trimTrailingWhitespace()
-		leadingSpacesToTabs()
-		endWithNewline()
-	}
-	java {
-		target 'src/main/java/**/*.java', 'src/test/java/**/*.java'
-		//toggleOffOn()
-		endWithNewline()
-		removeUnusedImports('cleanthat-javaparser-unnecessaryimport')
-		eclipse().configFile('spotless/spotless.eclipseformat.xml')
-	}
-}
-
-java {
-	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-	// if it is present.
-	// If you remove this line, sources will not be generated.
-	withSourcesJar()
-
-	sourceCompatibility = JavaVersion.VERSION_17
-	targetCompatibility = JavaVersion.VERSION_17
-}
+apply from: "$rootDir/gradle/scripts/moddevgradle.gradle"
+apply from: "$rootDir/gradle/scripts/repositories.gradle"
+apply from: "$rootDir/dependencies.gradle"
+apply from: "$rootDir/gradle/scripts/resources.gradle"
+apply from: "$rootDir/gradle/scripts/jars.gradle"
+apply from: "$rootDir/gradle/scripts/spotless.gradle"
 
 tasks.withType(JavaCompile).configureEach {
-	it.options.release = 17
+	options.encoding = 'UTF-8'
+}
+tasks.withType(Copy).configureEach {
+	duplicatesStrategy = 'exclude'
+}
+tasks.withType(Jar).configureEach {
+	duplicatesStrategy = 'exclude'
 }
 
-// Configure Maven publishing.
+lombok {
+	version = "1.18.38"
+}
+configurations {
+	runtimeClasspath.extendsFrom localRuntime
+}
+jar {
+	manifest.attributes([
+			"MixinConfigs": "${mod_id}.mixins.json"
+	])
+}
 publishing {
 	publications {
-		mavenJava(MavenPublication) {
+		register('mavenJava', MavenPublication) {
 			from components.java
 		}
 	}
-
-	// See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
 	repositories {
-		// Add repositories to publish to here.
-		// Notice: This block does NOT have the same function as the block in the top level.
-		// The repositories here will be used for publishing your artifact, not for
-		// retrieving dependencies.
+		maven {
+			url "file://${project.projectDir}/repo"
+		}
+	}
+}
+idea {
+	module {
+		downloadSources = true
+		downloadJavadoc = true
 	}
 }

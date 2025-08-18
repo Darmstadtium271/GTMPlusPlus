@@ -23,6 +23,9 @@
   "gtmplusplus.machine.steam_multiblocks.processing_velocity.tooltip": "比相同压力的单方块蒸汽机器快25%",
   "gtmplusplus.machine.steam_multiblocks.steam_consumption.tooltip": "只需要使用配方要求蒸汽速率的88.8%",
   "gtmplusplus.machine.steam_multiblocks.max_parallel.tooltip": "一次至多处理%1$s个物品",
+
+  "block.gtmplusplus.energy_meter": "Energy Meter",
   "gtmplusplus.gui.energy_meter.total_energy": "Total Energy",
-  "gtmplusplus.gui.energy_meter.reset": "Reset"
+  "gtmplusplus.gui.energy_meter.current_power": "Current Power",
+  "gtmplusplus.gui.energy_meter.clear": "Clear"
 }

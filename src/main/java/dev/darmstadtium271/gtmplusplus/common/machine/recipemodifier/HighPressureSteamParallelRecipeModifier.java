@@ -48,7 +48,7 @@ public final class HighPressureSteamParallelRecipeModifier {
         }
         if (RecipeHelper.getRecipeEUtTier(recipe) > GTValues.LV) return ModifierFunction.NULL;
         // long eut = RecipeHelper.getInputEUt(recipe);
-        long eut = recipe.getInputEUt();
+        long eut = recipe.getInputEUt().getTotalEU();
         int parallelAmount = ParallelLogic.getParallelAmount(machine, recipe, steamMachine.getMaxParallels());
         double eutMultiplier = (eut * 0.8888 * parallelAmount <= 32) ? (0.8888 * parallelAmount) : (32.0 / eut);
         return ModifierFunction.builder().inputModifier(ContentModifier.multiplier(parallelAmount))

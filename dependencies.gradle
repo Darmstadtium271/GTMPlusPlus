@@ -1,0 +1,25 @@
+dependencies {
+	compileOnly("org.jetbrains:annotations:$project.jetbrains_annotations_version")
+
+	modImplementation("com.gregtechceu.gtceu:gtceu-1.20.1:$project.gtceu_version")
+	modImplementation("com.lowdragmc.ldlib:ldlib-forge-1.20.1:$project.ldlib_version")
+	modImplementation("com.tterrag.registrate:Registrate:$project.registrate_version")
+	modImplementation("dev.toma.configuration:configuration-forge-1.20.1:$project.configuration_version")
+
+	annotationProcessor("org.spongepowered:mixin:$project.mixin_version:processor")
+	compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:$project.mixinExtras_version"))
+	jarJar(api("io.github.llamalad7:mixinextras-forge:$project.mixinExtras_version")).version {
+		require("[$project.mixinExtras_version,)")
+	}
+
+	modCompileOnly("mezz.jei:jei-1.20.1-common-api:$project.jei_version")
+	modCompileOnly("mezz.jei:jei-1.20.1-forge-api:$project.jei_version")
+	modImplementation("mezz.jei:jei-1.20.1-forge:$project.jei_version")
+
+	modImplementation("curse.maven:shimmer-627824:$project.shimmer_id")
+	modImplementation("curse.maven:jade-324717:$project.jade_id")
+	modImplementation("dev.emi:emi-forge:$project.emi_version")
+
+	compileOnly "org.projectlombok:lombok:$project.lombok_version"
+	annotationProcessor "org.projectlombok:lombok:$project.lombok_version"
+}

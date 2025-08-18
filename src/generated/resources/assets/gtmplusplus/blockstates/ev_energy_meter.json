@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "gtmplusplus:block/machine/ev_energy_meter",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "gtmplusplus:block/machine/ev_energy_meter"
+    },
+    "facing=south": {
+      "model": "gtmplusplus:block/machine/ev_energy_meter",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "gtmplusplus:block/machine/ev_energy_meter",
+      "y": 270
+    }
+  }
+}

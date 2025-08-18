@@ -1,0 +1,34 @@
+modLoader = "javafml"
+loaderVersion = "[47,)"
+license="${mod_license}"
+issueTrackerURL="${mod_issue_tracker}"
+
+[[mods]]
+modId="${mod_id}"
+version="${mod_version}"
+displayName="${mod_name}"
+displayURL="${mod_url}"
+authors="${mod_authors}"
+description='''${mod_description}'''
+
+[[dependencies.gtmplusplus]]
+modId = "forge"
+mandatory = true
+versionRange = "[47,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.gtmplusplus]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[${minecraft_version},)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.gtmplusplus]]
+modId = "gtceu"
+mandatory = true
+versionRange = "[${gtceu_version},)"
+side = "BOTH"
+ordering = "AFTER"
+

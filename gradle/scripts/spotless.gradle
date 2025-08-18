@@ -1,0 +1,15 @@
+spotless {
+    format 'misc', {
+        target '*.gradle', '.gitattributes', '.gitignore'
+        trimTrailingWhitespace()
+        leadingSpacesToTabs()
+        endWithNewline()
+    }
+    java {
+        target 'src/main/java/**/*.java', 'src/test/java/**/*.java'
+        //toggleOffOn()
+        endWithNewline()
+        removeUnusedImports('cleanthat-javaparser-unnecessaryimport')
+        eclipse().configFile('spotless/spotless.eclipseformat.xml')
+    }
+}
