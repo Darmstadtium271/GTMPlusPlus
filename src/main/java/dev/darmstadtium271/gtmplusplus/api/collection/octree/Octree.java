@@ -4,7 +4,8 @@ import com.google.common.collect.ImmutableList;
 import dev.darmstadtium271.gtmplusplus.api.collection.valuetypes.LocationRelatedValue;
 import net.minecraft.world.phys.Vec3;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.function.BiFunction;
 
 public class Octree<T extends LocationRelatedValue> {
@@ -13,13 +14,9 @@ public class Octree<T extends LocationRelatedValue> {
     public static final int RANGE = 1 << 26;
     public static final int MAX_ELEMENT = 4;
 
-    private final BiFunction<T, T, T> VALUE_MERGING_FUNCTION;
-
     private final OctreeNode<T> octreeRoot;
-    private final Map<Vec3, T> values = new HashMap<>();
 
     public Octree(int start, int end, BiFunction<T, T, T> VALUE_MERGING_FUNCTION) {
-        this.VALUE_MERGING_FUNCTION = VALUE_MERGING_FUNCTION;
         octreeRoot = new OctreeNode<>(new Vec3(start, start, start), new Vec3(end, end, end), VALUE_MERGING_FUNCTION);
     }
 
@@ -29,20 +26,15 @@ public class Octree<T extends LocationRelatedValue> {
 
     public void insert(T value) {
         octreeRoot.insert(value);
-        if (values.computeIfPresent(value.getVec3Pos(), (key, item) -> VALUE_MERGING_FUNCTION.apply(item, value)) ==
-                null) {
-            values.put(value.getVec3Pos(), value);
-        }
     }
 
     public void remove(Vec3 pos) {
         octreeRoot.remove(pos);
-        values.remove(pos);
     }
 
     public ImmutableList<T> getValues() {
         ImmutableList.Builder<T> builder = ImmutableList.builder();
-        values.forEach((pos, value) -> builder.add(value));
+        octreeRoot.values.forEach((pos, value) -> builder.add(value));
         return builder.build();
     }
 
@@ -65,20 +57,20 @@ public class Octree<T extends LocationRelatedValue> {
                 result.addAll(currentNode.values.values());
             } else if ((xEnd < currentNode.getStartPos().x || currentNode.getEndPos().x <= xStart) ||
                     (yEnd < currentNode.getStartPos().y || currentNode.getEndPos().y <= yStart) ||
-                    (zEnd < currentNode.getStartPos().z || currentNode.getEndPos().z <= zStart)) {} else
-                if (!currentNode.values.isEmpty()) {
-                    if (currentNode.childNodes.isEmpty())
-                        values.forEach((key, value) -> {
-                            if (xStart <= key.x && key.x < xEnd && yStart <= key.y && key.y < yEnd && zStart <= key.z &&
-                                    key.z < zEnd)
-                                result.add(value);
-                        });
-                    else {
-                        for (var childNode : currentNode.childNodes) {
-                            if (!childNode.values.isEmpty()) queue.add(childNode);
-                        }
+                    (zEnd < currentNode.getStartPos().z || currentNode.getEndPos().z <= zStart)) {
+            } else if (!currentNode.values.isEmpty()) {
+                if (currentNode.childNodes.isEmpty())
+                    currentNode.values.forEach((key, value) -> {
+                        if (xStart <= key.x && key.x < xEnd && yStart <= key.y && key.y < yEnd && zStart <= key.z &&
+                                key.z < zEnd)
+                            result.add(value);
+                    });
+                else {
+                    for (var childNode : currentNode.childNodes) {
+                        if (!childNode.values.isEmpty()) queue.add(childNode);
                     }
                 }
+            }
         }
         return result.build();
     }

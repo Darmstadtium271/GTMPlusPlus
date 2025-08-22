@@ -6,11 +6,11 @@ dependencies {
 	modImplementation("com.tterrag.registrate:Registrate:$project.registrate_version")
 	modImplementation("dev.toma.configuration:configuration-forge-1.20.1:$project.configuration_version")
 
-	annotationProcessor("org.spongepowered:mixin:$project.mixin_version:processor")
-	compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:$project.mixinExtras_version"))
-	jarJar(api("io.github.llamalad7:mixinextras-forge:$project.mixinExtras_version")).version {
-		require("[$project.mixinExtras_version,)")
-	}
+//	annotationProcessor("org.spongepowered:mixin:$project.mixin_version:processor")
+//	compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:$project.mixinExtras_version"))
+//	jarJar(api("io.github.llamalad7:mixinextras-forge:$project.mixinExtras_version")).version {
+//		require("[$project.mixinExtras_version,)")
+//	}
 
 	modCompileOnly("mezz.jei:jei-1.20.1-common-api:$project.jei_version")
 	modCompileOnly("mezz.jei:jei-1.20.1-forge-api:$project.jei_version")
