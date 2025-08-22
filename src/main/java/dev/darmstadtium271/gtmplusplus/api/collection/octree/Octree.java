@@ -59,17 +59,26 @@ public class Octree<T extends LocationRelatedValue> {
         queue.add(octreeRoot);
         while (!queue.isEmpty()) {
             var currentNode = queue.remove();
-            for (var childNode : currentNode.childNodes) {
-                if ((xStart <= childNode.getStartPos().x && childNode.getEndPos().x <= xEnd) &&
-                        (yStart <= childNode.getStartPos().y && childNode.getEndPos().y <= yEnd) &&
-                        (zStart <= childNode.getStartPos().z && childNode.getEndPos().z <= zEnd)) {
-                    result.addAll(childNode.values.values());
-                } else if ((xEnd < childNode.getStartPos().x || childNode.getEndPos().x <= xStart) ||
-                        (yEnd < childNode.getStartPos().y || childNode.getEndPos().y <= yStart) ||
-                        (zEnd < childNode.getStartPos().z || childNode.getEndPos().z <= zStart)) {} else {
+            if ((xStart <= currentNode.getStartPos().x && currentNode.getEndPos().x <= xEnd) &&
+                    (yStart <= currentNode.getStartPos().y && currentNode.getEndPos().y <= yEnd) &&
+                    (zStart <= currentNode.getStartPos().z && currentNode.getEndPos().z <= zEnd)) {
+                result.addAll(currentNode.values.values());
+            } else if ((xEnd < currentNode.getStartPos().x || currentNode.getEndPos().x <= xStart) ||
+                    (yEnd < currentNode.getStartPos().y || currentNode.getEndPos().y <= yStart) ||
+                    (zEnd < currentNode.getStartPos().z || currentNode.getEndPos().z <= zStart)) {} else
+                if (!currentNode.values.isEmpty()) {
+                    if (currentNode.childNodes.isEmpty())
+                        values.forEach((key, value) -> {
+                            if (xStart <= key.x && key.x < xEnd && yStart <= key.y && key.y < yEnd && zStart <= key.z &&
+                                    key.z < zEnd)
+                                result.add(value);
+                        });
+                    else {
+                        for (var childNode : currentNode.childNodes) {
                             if (!childNode.values.isEmpty()) queue.add(childNode);
                         }
-            }
+                    }
+                }
         }
         return result.build();
     }

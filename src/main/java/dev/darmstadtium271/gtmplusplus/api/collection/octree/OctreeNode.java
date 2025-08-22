@@ -90,9 +90,9 @@ public class OctreeNode<T extends LocationRelatedValue> {
                 break;
             }
             case 0b001: {
-                childNodes.add(new OctreeNode<>(new Vec3(startPos.x, startPos.y, midPos.z),
-                        new Vec3(endPos.x, endPos.y, midPos.z), VALUE_MERGING_FUNCTION));
                 childNodes.add(new OctreeNode<>(new Vec3(startPos.x, startPos.y, startPos.z),
+                        new Vec3(endPos.x, endPos.y, midPos.z), VALUE_MERGING_FUNCTION));
+                childNodes.add(new OctreeNode<>(new Vec3(startPos.x, startPos.y, midPos.z),
                         new Vec3(endPos.x, endPos.y, endPos.z), VALUE_MERGING_FUNCTION));
                 break;
             }
