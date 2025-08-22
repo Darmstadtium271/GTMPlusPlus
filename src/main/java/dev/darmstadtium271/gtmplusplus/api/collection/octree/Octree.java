@@ -57,20 +57,20 @@ public class Octree<T extends LocationRelatedValue> {
                 result.addAll(currentNode.values.values());
             } else if ((xEnd < currentNode.getStartPos().x || currentNode.getEndPos().x <= xStart) ||
                     (yEnd < currentNode.getStartPos().y || currentNode.getEndPos().y <= yStart) ||
-                    (zEnd < currentNode.getStartPos().z || currentNode.getEndPos().z <= zStart)) {
-            } else if (!currentNode.values.isEmpty()) {
-                if (currentNode.childNodes.isEmpty())
-                    currentNode.values.forEach((key, value) -> {
-                        if (xStart <= key.x && key.x < xEnd && yStart <= key.y && key.y < yEnd && zStart <= key.z &&
-                                key.z < zEnd)
-                            result.add(value);
-                    });
-                else {
-                    for (var childNode : currentNode.childNodes) {
-                        if (!childNode.values.isEmpty()) queue.add(childNode);
+                    (zEnd < currentNode.getStartPos().z || currentNode.getEndPos().z <= zStart)) {} else
+                if (!currentNode.values.isEmpty()) {
+                    if (currentNode.childNodes.isEmpty())
+                        currentNode.values.forEach((key, value) -> {
+                            if (xStart <= key.x && key.x < xEnd && yStart <= key.y && key.y < yEnd && zStart <= key.z &&
+                                    key.z < zEnd)
+                                result.add(value);
+                        });
+                    else {
+                        for (var childNode : currentNode.childNodes) {
+                            if (!childNode.values.isEmpty()) queue.add(childNode);
+                        }
                     }
                 }
-            }
         }
         return result.build();
     }
