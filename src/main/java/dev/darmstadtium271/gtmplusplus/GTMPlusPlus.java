@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import dev.darmstadtium271.gtmplusplus.common.data.machines.GTMPPMultiblocks;
+import dev.darmstadtium271.gtmplusplus.common.item.RadiationTestItem;
 import dev.darmstadtium271.gtmplusplus.common.registry.GTMPPRegistration;
 import dev.darmstadtium271.gtmplusplus.data.GTMPPDatagen;
 import net.minecraft.resources.ResourceLocation;
@@ -38,6 +39,7 @@ public class GTMPlusPlus {
         modBus = context.getModEventBus();
         ConfigHolder.init();
         GTMPPRegistration.init();
+        RadiationTestItem.init();
         GTMPPEvents.init(modBus);
         GTMPPDatagen.init();
     }
